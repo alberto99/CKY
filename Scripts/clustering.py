@@ -8,6 +8,7 @@
 import shutil
 import sys
 import os
+import numpy
 
 #Defaults
 keep_clusters = 3
@@ -35,15 +36,30 @@ def process_clusters(dirname,keep_clusters=keep_clusters):
         (c,p) = best[i]
         shutil.copy2('h%s.rep.c%s' % (name,c),'h%s.cluster%i' % (name,i))
 
-def create_ptraj_script(dirname):
+def create_pdb(dirname):
     name = dirname[9:]
-    txt = '''ptraj topol.top<<EOF >& err_ptraj
+    txt = '''mkdir PDB
+    ptraj topol.top<<EOF >& err_ptraj
     trajin traj.crd 200 100000 1
-    rmsd first mass  @CA
-    cluster out h%s representative pdb \ 
-       average pdb means clusters 5 rms @CA
+    trajout PDB/pdb pdb
 EOF
     ''' % name
+    fo = open('ptraj.sh','w')
+    fo.write(txt)
+    fo.close()
+    os.system('sh ptraj.sh')
+    os.unlink('ptraj.sh')
+    os.unlink('err_ptraj')
+
+def create_ptraj_script(dirname,trajin='trajin traj.crd 200 100000 1\n'):
+    name = dirname[9:]
+    txt = '''ptraj topol.top<<EOF >& err_ptraj
+    {trajin}
+    rmsd first mass  @CA
+    cluster out h{name} representative pdb \ 
+       average pdb means clusters 5 rms @CA
+EOF
+    '''.format(trajin=trajin,name=name)
     fo = open('ptraj.sh','w')
     fo.write(txt)
     fo.close()
@@ -90,6 +106,32 @@ export VMDNOCUDA=1
     fo.close()
     os.system('qsub clust.sh')
 
+def analyze_goap(directory,top=1000,criteria='dfire'):
+    path = os.getcwd()
+    os.chdir(directory)
+    files = glob.glob('pdb.*')
+    files = '\n'.join(files)
+    txt = "/nics/d/home/alberto3/src/goap-alone\n"
+    txt += files
+    fo = open('goap.in','w')
+    fo.write(txt)
+    fo.close()
+    os.system('/nics/d/home/alberto3/src/goap-alone/goap < goap.in > results.txt')
+    return select_top(top=top,criteria=criteria,path=path)
+
+def select_top(top=1000,path='..',criteria='dfire')
+    data = numpy.loadtxt('results.txt', dtype=({'names':['i','name','both','dfire','goap'],'formats':[numpy.int, 'S15', numpy.float,numpy.float,numpy.float]}))
+
+    a = numpy.argsort(data['dfire'])[0:1000]
+    b = numpy.argsort(data['goap'])[0:1000]
+    c = numpy.argsort(data['both'])[0:1000]
+    alla =numpy.concatenate((a,b,c))
+    a = numpy.unique(alla)
+    c = ['trajin PDB/%s' % b for b in data['name'][a]]
+    os.chdir(path)
+    txt += '\n'.join(c)
+    return txt
+
 
 def main():
     dirname = sys.argv[1]
@@ -99,7 +141,11 @@ def main():
         #os.system('~/src/springs/bin/gather.py 0 0')
         os.system('~/src/springs/bin/topol.py')
         pdb_to_traj()
-        create_ptraj_script(dirname)
+        #analyze with dfire
+        create_pdb(dirname)
+        txt = analyze_goap(PDB)
+        #Cluster
+        create_ptraj_script(dirname,trajin=txt)
         process_clusters(dirname)
     else:
         os.chdir(dirname)
