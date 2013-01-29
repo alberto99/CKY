@@ -150,9 +150,10 @@ with ladder.setup():
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
         ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.7)
 
-        contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
-
         ${extra_restraints}
+
+        confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
+        ladder.add_restraints(confinement_rest, restraints.ConstantCollection)
 '''
 
 setup_script = string.Template(setup_script)
