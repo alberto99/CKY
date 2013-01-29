@@ -5,10 +5,10 @@ from_string = '''sequence = rest_parse.get_fasta_sequence( open('sequence.dat').
         ladder.init_from_sequence(sequence)'''
 
 extra_restraints = '''
-        contact_files = glob.glob('TEMPLATES/template*.restraint')
+        contact_files = glob.glob('TEMPLATES/template*.restraints')
         rests = []
         for c in contact_files:
-            rests.append(restraints.RestrainCombiner(rest_parse.get_contact_restraints( open(c).read() ) ))
+            rests.append(restraints.RestraintCombiner(rest_parse.get_contact_restraints( open(c).read() ) ))
         ladder.add_restraints(rests,
         restraints.BinaryMonteCarloCollection, accuracy=1./len(rests),
         force_scaler=contact_scaler)

@@ -28,6 +28,7 @@ def make_master(name,seq):
 
     seq = str(seq)
     if seq[0] == seq[-1]:
+        assemble=''
         if int(seq[0]) == 1:
             txt = '''#PBS -N CKY
 #PBS -j oe
