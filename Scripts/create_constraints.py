@@ -10,8 +10,8 @@ excluded_residues = []
 
 
 
-def generate_distances(p):
-    rest = open('distances.dat', 'w')
+def generate_distances(p,fo='distances.dat'):
+    rest = open(fo, 'w')
 
     n_res = len(p)
 
@@ -79,12 +79,12 @@ def generate_ss(p):
         print >>rest, '%d \t -80 30 -30 30 0.3 1.5' % res_i
 
 
-def main():
-    p = protein.Protein('template.pdb')
+def main(fi='template.pdb',fo='distances.dat'):
+    p = protein.Protein(fi)
 
-    generate_distances(p)
-    generate_torsions(p)
-    generate_ss(p)
+    generate_distances(p,fo)
+    #generate_torsions(p)
+    #generate_ss(p)
 
 if __name__ == '__main__':
     main()

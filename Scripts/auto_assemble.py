@@ -4,9 +4,23 @@ import shutil
 import initial_setup
 import sys
 import os
+import create_constraints
+import glob
 
 #Defaults
 numb_cl = 3
+
+
+def create_restraints():
+    print os.getcwd()
+    os.chdir('TEMPLATES')
+    files = glob.glob('template_*.pdb')
+    for f in files:
+        name = '{}restraints'.format(f[0:-3])
+        print name,f
+        create_constraints.main(fi=f,fo=name)
+    os.chdir('..')
+    print os.getcwd()
 
 def get_seq_ss(dirname):
     os.chdir('..')
@@ -93,6 +107,7 @@ def main():
         match = copy_files(dirname)
         system = get_seq_ss(dirname)
         generate_pairs(match,system)
+        create_restraints()
     else:
         os.chdir(dirname)
         submit_queue(dirname)
