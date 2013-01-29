@@ -9,6 +9,7 @@ import shutil
 import sys
 import os
 import numpy
+import glob
 
 #Defaults
 keep_clusters = 3
@@ -43,7 +44,7 @@ def create_pdb(dirname):
     trajin traj.crd 200 100000 1
     trajout PDB/pdb pdb
 EOF
-    ''' % name
+    '''
     fo = open('ptraj.sh','w')
     fo.write(txt)
     fo.close()
@@ -119,7 +120,7 @@ def analyze_goap(directory,top=1000,criteria='dfire'):
     os.system('/nics/d/home/alberto3/src/goap-alone/goap < goap.in > results.txt')
     return select_top(top=top,criteria=criteria,path=path)
 
-def select_top(top=1000,path='..',criteria='dfire')
+def select_top(top=1000,path='..',criteria='dfire'):
     data = numpy.loadtxt('results.txt', dtype=({'names':['i','name','both','dfire','goap'],'formats':[numpy.int, 'S15', numpy.float,numpy.float,numpy.float]}))
 
     a = numpy.argsort(data['dfire'])[0:1000]
@@ -129,7 +130,7 @@ def select_top(top=1000,path='..',criteria='dfire')
     a = numpy.unique(alla)
     c = ['trajin PDB/%s' % b for b in data['name'][a]]
     os.chdir(path)
-    txt += '\n'.join(c)
+    txt = '\n'.join(c)
     return txt
 
 
@@ -143,7 +144,7 @@ def main():
         pdb_to_traj()
         #analyze with dfire
         create_pdb(dirname)
-        txt = analyze_goap(PDB)
+        txt = analyze_goap('PDB')
         #Cluster
         create_ptraj_script(dirname,trajin=txt)
         process_clusters(dirname)

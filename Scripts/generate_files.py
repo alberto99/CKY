@@ -23,7 +23,13 @@ def write_setup(f,seq,cycles):
     fo.close()
 
 def make_master(name,seq):
-    txt = '''#PBS -N CKY
+    txt = ''
+
+
+    seq = str(seq)
+    if seq[0] == seq[-1]:
+        if int(seq[0]) == 1:
+            txt = '''#PBS -N CKY
 #PBS -j oe
 #PBS -A TG-MCB120052
 
@@ -41,11 +47,6 @@ module load python
 module load scipy
 module load numpy
 '''
-
-
-    seq = str(seq)
-    if seq[0] == seq[-1]:
-        pass
     else:
         txt += templates.make_assembly.format(name=name)
     txt += templates.master_script.format(name=name)
