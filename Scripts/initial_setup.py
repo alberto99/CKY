@@ -45,7 +45,7 @@ class CreateSystem(object):
         print self.master
 
     def get_cycles(self,name):
-        poss_cycles = [1000,2500,5000,5000,5000,5000]
+        poss_cycles = [500,1500,5000,5000,5000,5000]
         length = len(str(name))
         if length > 6:
             self.cycles=5000

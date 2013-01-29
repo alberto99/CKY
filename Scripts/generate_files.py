@@ -23,7 +23,26 @@ def write_setup(f,seq,cycles):
     fo.close()
 
 def make_master(name,seq):
-    txt = ''
+    txt = '''#PBS -N CKY
+#PBS -j oe
+#PBS -A TG-MCB120052
+
+#PBS -l walltime=24:00:00
+#PBS -l nodes=10:ppn=3:gpus=3:shared
+
+date
+cd $PBS_O_WORKDIR
+
+echo "nodefile="
+cat $PBS_NODEFILE
+echo "=end nodefile"
+
+module load python
+module load scipy
+module load numpy
+'''
+
+
     seq = str(seq)
     if seq[0] == seq[-1]:
         pass
