@@ -146,60 +146,9 @@ with ladder.setup():
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
-        #End to end distance of the helix:
-        #try:
-        #    helix = rest_parse.get_distance_bound_restraints( open('helix_dist.dat').read(), quadratic_range=2.0 )
-        #except:
-        #    helix = []
-        #try:
-        #    extended = rest_parse.get_distance_bound_restraints( open('extended.dat').read(), quadratic_range=2.0 )
-        #except:
-        #    extended = []
-        #ss = helix + extended
-        #ladder.add_restraints(ss, restraints.BinaryMonteCarloCollection, accuracy=0.8)
-
-	#Fragments of 5 and lower for sec structure:
+        #Fragments of 5 and lower for sec structure:
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
         ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.7)
-
-        ss =  open('ss.dat').read()
-        extended = 0
-        helical = 0
-        sse = []
-        for i,l in enumerate(ss):
-            if l not in "HE.":
-                continue
-            if l in 'E':
-                if extended:
-                    continue
-                else:
-                    start = i
-                    extended = 1
-            if l in 'H':
-                if helical:
-                    continue
-                else:
-                    start = i
-                    helical = 1
-            if l not in 'E' and extended:
-                end = i
-                sse.append((start+1,end+1))
-                extended = 0
-            if l not in 'H' and helical:
-                end = i
-                sse.append((start+1,end+1))
-                helical = 0
-        print sse
-
-
-        n_res = len(ladder.sequence)
-        for i in range(len(sse)):
-            for j in range(i+1,len(sse)):
-                g1s,g1e = sse[i]
-                g2s,g2e = sse[j]
-                print g1s,g1e,g2s,g2e
-                hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
-                ladder.add_restraints(hydrophobic, restraints.MonteCarloCollection, accuracy=0.1)
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
