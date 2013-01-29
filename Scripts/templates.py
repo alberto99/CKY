@@ -162,6 +162,7 @@ setup_script = string.Template(setup_script)
 make_assembly = '''~/src/CKY/Scripts/auto_assemble.py QUEUE {name}'''
 master_script = '''
 cd {name}
+{assembly}
 chmod +x setup.py
 export PYTHONPATH=~/src/springs:$PYTHONPATH
 ./setup.py

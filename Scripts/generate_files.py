@@ -48,6 +48,6 @@ module load scipy
 module load numpy
 '''
     else:
-        txt += templates.make_assembly.format(name=name)
-    txt += templates.master_script.format(name=name)
+        assemble = templates.make_assembly.format(name=name)
+    txt += templates.master_script.format(name=name,assembly=assemble)
     return txt
