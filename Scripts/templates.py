@@ -4,6 +4,15 @@ from_template = 'ladder.init_from_templates( glob.glob(\'TEMPLATES/template_*.pd
 from_string = '''sequence = rest_parse.get_fasta_sequence( open('sequence.dat').read() )
         ladder.init_from_sequence(sequence)'''
 
+extra_restraints = '''
+        contact_files = glob.glob('TEMPLATES/template*.restraint')
+        rests = []
+        for c in contact_files:
+            rests.append(restraints.RestrainCombiner(rest_parse.get_contact_restraints( open(c).read() ) ))
+        ladder.add_restraints(rests,
+        restraints.BinaryMonteCarloCollection, accuracy=1./len(rests),
+        force_scaler=contact_scaler)
+        '''
 
 setup_script = '''#!/usr/bin/env python
 
@@ -135,7 +144,7 @@ with ladder.setup():
         ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
         ladder.add_restraints(ss2, restraints.ConstantCollection)
 
-	contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
+        contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
         #End to end distance of the helix:
         #try:
@@ -191,6 +200,10 @@ with ladder.setup():
                 print g1s,g1e,g2s,g2e
                 hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
                 ladder.add_restraints(hydrophobic, restraints.MonteCarloCollection, accuracy=0.1)
+
+        contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
+
+        ${extra_restraints}
 '''
 
 setup_script = string.Template(setup_script)

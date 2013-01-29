@@ -14,9 +14,11 @@ def write_setup(f,seq,cycles):
     seq = str(seq)
     if seq[0] == seq[-1]:
         startup = templates.from_string
+        extra_restraints = '\n'
     else:
         startup = templates.from_template
-    txt = templates.setup_script.substitute(name='Seq%s' % seq,startup=startup,cycles=cycles)
+        extra_restraints = templates.extra_restraints
+    txt = templates.setup_script.substitute(name='Seq%s' % seq,startup=startup,cycles=cycles,extra_restraints=extra_restraints)
     fo.write(txt)
     fo.close()
 
