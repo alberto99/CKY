@@ -10,7 +10,6 @@ import glob
 #Defaults
 numb_cl = 3
 
-
 def create_restraints():
     print os.getcwd()
     os.chdir('TEMPLATES')
@@ -52,6 +51,10 @@ def generate_pairs(match,system):
                 loop = str(system.seq)[end:start-1]
                 print loop
                 assemble.make_assembly(first_sse=s1,sec_sse=s2,loop_aa=loop,output_name='template_%i.pdb' % k)
+
+                fo = ('template_%i.restraints' % k,'w')
+                create_constraints.main(fi=s1,fo=fo)
+                create_constraints.main(fi=s2,fo=fo)
                 k += 1
     os.chdir('..')
 
@@ -107,7 +110,7 @@ def main():
         match = copy_files(dirname)
         system = get_seq_ss(dirname)
         generate_pairs(match,system)
-        create_restraints()
+        #create_restraints()
     else:
         os.chdir(dirname)
         submit_queue(dirname)

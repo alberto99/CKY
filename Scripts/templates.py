@@ -8,7 +8,9 @@ extra_restraints = '''
         contact_files = glob.glob('TEMPLATES/template*.restraints')
         rests = []
         for c in contact_files:
-            rests.append(restraints.RestraintCombiner(rest_parse.get_contact_restraints( open(c).read() ) ))
+            a = restraints.RestraintCombiner(rest_parse.get_contact_restraints( open(c).read() ) )
+            if (len(a) >= 1):
+                rests.append(a)
         ladder.add_restraints(rests,
         restraints.BinaryMonteCarloCollection, accuracy=1./len(rests),
         force_scaler=contact_scaler)
