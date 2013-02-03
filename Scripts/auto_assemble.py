@@ -43,18 +43,22 @@ def generate_pairs(match,system):
             for (f1,f2) in match:
                 s1 = 'h%s.cluster%i' % (f1,i)
                 s2 = 'h%s.cluster%i' % (f2,j)
-                (tmp,end,ty) = system.sse[int(str(f1)[-1])-1]
-                (start,tmp,ty) = system.sse[int(str(f2)[0])-1]
+                (tmp1,end,ty) = system.sse[int(str(f1)[-1])-1]
+                (start,tmp2,ty) = system.sse[int(str(f2)[0])-1]
                 #The numbering is amber like, starts at 1. For beggining of loop (end of first fragment)
                 #we would do -1 and +1 to select the first "." instead of "H" or "E", so keep same number
                 #For the end of loop, we should do -1 and -1; since the [ini:fin] is a [:) f(x), only do -1
                 loop = str(system.seq)[end:start-1]
                 print loop
+                renumb = str(system.seq)[tmp1:start-1]
+                print renumb
+                #Since there is overlap of one residue to superimpose, correct by 1
+                offset = len(renumb) - 1
                 assemble.make_assembly(first_sse=s1,sec_sse=s2,loop_aa=loop,output_name='template_%i.pdb' % k)
 
-                fo = ('template_%i.restraints' % k,'w')
-                create_constraints.main(fi=s1,fo=fo)
-                create_constraints.main(fi=s2,fo=fo)
+                fo = open('template_%i.restraints' % k,'w')
+                create_constraints.main(fi=s1,fo=fo,offset=0)
+                create_constraints.main(fi=s2,fo=fo,offset=offset)
                 k += 1
     os.chdir('..')
 
