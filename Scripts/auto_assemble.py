@@ -53,7 +53,7 @@ def generate_pairs(match,system):
                 renumb = str(system.seq)[tmp1:start-1]
                 print renumb
                 #Since there is overlap of one residue to superimpose, correct by 1
-                offset = len(renumb) - 1
+                offset = len(renumb) + 1
                 assemble.make_assembly(first_sse=s1,sec_sse=s2,loop_aa=loop,output_name='template_%i.pdb' % k)
 
                 fo = open('template_%i.restraints' % k,'w')
