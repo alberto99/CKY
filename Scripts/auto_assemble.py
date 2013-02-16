@@ -50,10 +50,10 @@ def generate_pairs(match,system):
                 #For the end of loop, we should do -1 and -1; since the [ini:fin] is a [:) f(x), only do -1
                 loop = str(system.seq)[end:start-1]
                 print loop
-                renumb = str(system.seq)[tmp1:start-1]
+                renumb = str(system.seq)[0:start-1]
                 print renumb
                 #Since there is overlap of one residue to superimpose, correct by 1
-                offset = len(renumb) + 1
+                offset = len(renumb) - 1
                 assemble.make_assembly(first_sse=s1,sec_sse=s2,loop_aa=loop,output_name='template_%i.pdb' % k)
 
                 fo = open('template_%i.restraints' % k,'w')
