@@ -107,6 +107,41 @@ export VMDNOCUDA=1
     fo.close()
     os.system('qsub clust.sh')
 
+def submit_keeneland(dirname):
+    txt='''#PBS -N clust
+#PBS -j oe
+#PBS -A TG-MCB120052
+
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=1
+
+date
+cd $PBS_O_WORKDIR
+
+echo "nodefile="
+cat $PBS_NODEFILE
+echo "=end nodefile"
+
+module load python
+module load scipy
+module load numpy
+
+export PYTHONPATH=~/src/springs:$PYTHONPATH
+export PYTHONPATH=~/src/Python:$PYTHONPATH
+
+module add epd
+#disable using GPU
+export VMDCUDANODISPLAYGPUS=1
+export VMDNOCUDA=1 
+
+
+%s QUEUE %s
+''' % (sys.argv[0],sys.argv[1])
+    fo = open('clust.sh','w')
+    fo.write(txt)
+    fo.close()
+    os.system('qsub clust.sh')
+
 def analyze_goap(directory,top=1000,criteria='dfire'):
     path = os.getcwd()
     os.chdir(directory)
@@ -139,6 +174,7 @@ def main():
     if dirname == 'QUEUE':
         dirname = sys.argv[2]
         os.system('pwd')
+        os.system('zcat traj.pdb.gz > traj.pdb')
         #os.system('~/src/springs/bin/gather.py 0 0')
         os.system('~/src/springs/bin/topol.py')
         pdb_to_traj()
@@ -150,7 +186,8 @@ def main():
         process_clusters(dirname)
     else:
         os.chdir(dirname)
-        submit_queue(dirname)
+        #submit_queue(dirname)
+        submit_keeneland(dirname)
 
 
 
