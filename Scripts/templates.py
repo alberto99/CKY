@@ -317,14 +317,14 @@ with ladder.setup(cluster='keeneland'):
 
         #Fragments of 5 and lower for sec structure:
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
-        ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.7)
+        ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.5)
 
         destination = open('all_restraints.dat', 'wb')
         for filename in glob.glob('TEMPLATES/template*.restraints'):
             shutil.copyfileobj(open(filename, 'rb'), destination)
         destination.close()
 
-        long_restraints = rest_parse.get_contact_restraints( open('all_restraints.dat').read() )
+        long_restraints = rest_parse.get_distance_bound_restraints( open('all_restraints.dat').read() )
         ladder.add_restraints(
                 long_restraints,
                 restraints.BinaryMonteCarloCollection, accuracy=0.15,

@@ -48,6 +48,44 @@ def generate_distances(p,fo=open('distances.dat','w'),offset=0):
                 print >>rest, '%d \t %s \t %d \t %s \t %f \t %f \t 0.0' % (
                         ind_i+offset, name_i, ind_j+offset, name_j, 10.0, 0.10 )
 
+def generate_contacts(p,fo=open('distances.dat','w'),offset=0,wide=4,fce=0.1):
+    rest = fo
+
+    n_res = len(p)
+
+    for i in range(n_res):
+        if (i+1) in excluded_residues:
+            continue
+
+        ind_i = i + 1
+        print i, 'of', n_res
+
+        if p.Seq[i] == 'GLY':
+            name_i = 'CA'
+        else:
+            name_i = 'CB'
+
+        for j in range(i+8, n_res):
+            if (j+1) in excluded_residues:
+                continue
+
+            if p.Seq[j] == 'GLY':
+                name_j = 'CA'
+            else:
+                name_j = 'CB'
+
+            ind_j = j + 1
+
+            pos_1 = p.Pos[p.AtomInd(AtomName=name_i, ResNum=i), :]
+            pos_2 = p.Pos[p.AtomInd(AtomName=name_j, ResNum=j), :]
+
+            d = numpy.linalg.norm(pos_1 - pos_2)
+
+            if d < 10.0:
+
+                print >>rest, '%d \t %s \t %d \t %s \t %f \t %f \t %f \t %f' % (
+                        ind_i+offset, name_i, ind_j+offset, name_j, d-wide,d+wide,fce,1.0 )
+
 
 def generate_torsions(p):
     rest_10 = open('torsions10.dat', 'w')

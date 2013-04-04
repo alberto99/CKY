@@ -12,6 +12,7 @@ import numpy
 import glob
 import create_constraints
 import templates
+from zam import protein
 
 #Defaults
 keep_clusters = 3
@@ -27,7 +28,7 @@ def create_restraints():
     files = glob.glob('template_*.pdb')
     for f in files:
         name = '{}restraints'.format(f[0:-3])
-        create_constraints.main(fi=f,fo=open(name,'w'))
+        create_constraints.generate_contacts(protein.Protein(f),fo=open(name,'w'),offset=0,wide=4,fce=0.1)
     os.chdir('..')
 
 def create_backup(dirname):
