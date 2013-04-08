@@ -83,8 +83,11 @@ def generate_contacts(p,fo=open('distances.dat','w'),offset=0,wide=4,fce=0.1):
 
             if d < 10.0:
 
+                d_minus = d - wide
+                if d_minus < 0:
+                    d_minus = 0
                 print >>rest, '%d \t %s \t %d \t %s \t %f \t %f \t %f \t %f' % (
-                        ind_i+offset, name_i, ind_j+offset, name_j, d-wide,d+wide,fce,1.0 )
+                        ind_i+offset, name_i, ind_j+offset, name_j, d_minus,d+wide,fce,1.0 )
 
 
 def generate_torsions(p):
