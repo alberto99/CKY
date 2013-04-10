@@ -192,6 +192,37 @@ import restraints
 import shutil
 
 
+def make_hydroph_groups():
+        ss =  open('ss.dat').read()
+        extended = 0
+        helical = 0
+        sse = []
+        for i,l in enumerate(ss):
+            if l not in "HE.":
+                continue
+            if l in 'E':
+                if extended:
+                    continue
+                else:
+                    start = i
+                    extended = 1
+            if l in 'H':
+                if helical:
+                    continue
+                else:
+                    start = i
+                    helical = 1
+            if l not in 'E' and extended:
+                end = i
+                sse.append((start+1,end+1))
+                extended = 0
+            if l not in 'H' and helical:
+                end = i
+                sse.append((start+1,end+1))
+                helical = 0
+        print sse
+        return sse
+
 def add_restraint(start_index, delta_i, delta_j, add_helix):
     extended_bounds = numpy.load('bounds_E_5.npy')
     helical_bounds = numpy.load('bounds_H_5.npy')
@@ -325,10 +356,23 @@ with ladder.setup(cluster='keeneland'):
         destination.close()
 
         long_restraints = rest_parse.get_distance_bound_restraints( open('all_restraints.dat').read() )
+        print len(long_restraints)
         ladder.add_restraints(
                 long_restraints,
-                restraints.BinaryMonteCarloCollection, accuracy=0.15,
+                restraints.BinaryMonteCarloCollection, accuracy=0.05,
                 force_scaler=contact_scaler)
+
+        sse = make_hydroph_groups()
+
+        n_res = len(ladder.sequence)
+        for i in range(len(sse)):
+            for j in range(i+1,len(sse)):
+                g1s,g1e = sse[i]
+                g2s,g2e = sse[j]
+                print g1s,g1e,g2s,g2e
+                hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
+                ladder.add_restraints(hydrophobic, restraints.BinaryMonteCarloCollection, accuracy=0.1)
+
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
         ladder.add_restraints(confinement_rest, restraints.ConstantCollection)

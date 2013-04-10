@@ -48,7 +48,7 @@ def generate_distances(p,fo=open('distances.dat','w'),offset=0):
                 print >>rest, '%d \t %s \t %d \t %s \t %f \t %f \t 0.0' % (
                         ind_i+offset, name_i, ind_j+offset, name_j, 10.0, 0.10 )
 
-def generate_contacts(p,fo=open('distances.dat','w'),offset=0,wide=4,fce=0.1):
+def generate_contacts(p,fo=open('distances.dat','w'),offset=0,wide=4.,fce=0.1):
     rest = fo
 
     n_res = len(p)
@@ -83,11 +83,14 @@ def generate_contacts(p,fo=open('distances.dat','w'),offset=0,wide=4,fce=0.1):
 
             if d < 10.0:
 
-                d_minus = float(d - wide)
+                d_minus = float(d - float(wide))
+                print d_minus
                 if d_minus < 0.:
-                    d_minus = 0.
+                    d_minus = 0.0
+                print "afer: ",
+                print d_minus
                 print >>rest, '%d \t %s \t %d \t %s \t %f \t %f \t %f \t %f' % (
-                        ind_i+offset, name_i, ind_j+offset, name_j, d_minus,d+wide,fce,1.0 )
+                        ind_i+offset, name_i, ind_j+offset, name_j, d_minus,d+float(wide),fce,1.0 )
 
 
 def generate_torsions(p):
