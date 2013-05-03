@@ -190,6 +190,7 @@ import rest_parse
 import system
 import restraints
 import shutil
+import random
 
 
 def make_hydroph_groups():
@@ -356,10 +357,15 @@ with ladder.setup(cluster='keeneland'):
         destination.close()
 
         long_restraints = rest_parse.get_distance_bound_restraints( open('all_restraints.dat').read() )
-        print len(long_restraints)
+        random.shuffle(long_restraints)
+        n_long = float(len(long_restraints))
+        if n_long > 500:
+            long_restraints = long_restraints[:500]
+            n_long = float(len(long_restraints))
+        acc = 10.0/n_long
         ladder.add_restraints(
                 long_restraints,
-                restraints.BinaryMonteCarloCollection, accuracy=0.05,
+                restraints.BinaryMonteCarloCollection, accuracy=acc,
                 force_scaler=contact_scaler)
 
         sse = make_hydroph_groups()
@@ -371,7 +377,7 @@ with ladder.setup(cluster='keeneland'):
                 g2s,g2e = sse[j]
                 print g1s,g1e,g2s,g2e
                 hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
-                ladder.add_restraints(hydrophobic, restraints.BinaryMonteCarloCollection, accuracy=0.1)
+                ladder.add_restraints(hydrophobic, restraints.BinaryMonteCarloCollection, accuracy=0.1,force_scaler=contact_scaler)
 
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )

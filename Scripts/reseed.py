@@ -218,6 +218,8 @@ def main():
         #create pdbs and restraints
         create_pdb()
         create_restraints()
+        #seed = int(back_dir.split("_")[-1])+1
+        #create_setup_file(seed=seed)
         create_setup_file()
     else:
         #submit_queue(dirname)
