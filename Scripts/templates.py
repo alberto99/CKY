@@ -14,7 +14,7 @@ extra_restraints = '''
                 pass
         if len(rests) > 0:
             ladder.add_restraints(rests,
-            restraints.BinaryMonteCarloCollection, accuracy=1./len(rests),
+            restraints.BinaryLowestECollection, accuracy=1./len(rests),
             force_scaler=contact_scaler)
         '''
 
@@ -152,7 +152,7 @@ with ladder.setup():
 
         #Fragments of 5 and lower for sec structure:
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
-        ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.7)
+        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.7)
 
         ${extra_restraints}
 
@@ -349,7 +349,7 @@ with ladder.setup(cluster='keeneland'):
 
         #Fragments of 5 and lower for sec structure:
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
-        ladder.add_restraints(ss_restraints2, restraints.BinaryMonteCarloCollection, accuracy=0.5)
+        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.5)
 
         destination = open('all_restraints.dat', 'wb')
         for filename in glob.glob('TEMPLATES/template*.restraints'):
@@ -365,7 +365,7 @@ with ladder.setup(cluster='keeneland'):
         acc = 10.0/n_long
         ladder.add_restraints(
                 long_restraints,
-                restraints.BinaryMonteCarloCollection, accuracy=acc,
+                restraints.BinaryLowestECollection, accuracy=acc,
                 force_scaler=contact_scaler)
 
         sse = make_hydroph_groups()
@@ -377,7 +377,7 @@ with ladder.setup(cluster='keeneland'):
                 g2s,g2e = sse[j]
                 print g1s,g1e,g2s,g2e
                 hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
-                ladder.add_restraints(hydrophobic, restraints.BinaryMonteCarloCollection, accuracy=0.1,force_scaler=contact_scaler)
+                ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.1,force_scaler=contact_scaler)
 
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
