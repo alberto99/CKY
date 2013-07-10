@@ -146,12 +146,12 @@ with ladder.setup():
 
     with ladder.setup_restraints():
         ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
-        ladder.add_restraints(ss2, restraints.ConstantCollection)
+        ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
         #Fragments of 5 and lower for sec structure:
-        ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
+        ss_restraints2 = get_secondary_restraints( open('ss.dat').read() )
         ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.7)
 
         ${extra_restraints}
@@ -377,7 +377,8 @@ with ladder.setup(cluster='keeneland'):
                 g2s,g2e = sse[j]
                 print g1s,g1e,g2s,g2e
                 hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
-                ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.1,force_scaler=contact_scaler)
+                #Analysis of pdb shows that only 4% of possible hydroph interactions are possible.
+                ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.04,force_scaler=contact_scaler)
 
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
