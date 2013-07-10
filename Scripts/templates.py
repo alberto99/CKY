@@ -371,15 +371,18 @@ with ladder.setup(cluster='keeneland'):
         sse = make_hydroph_groups()
 
         n_res = len(ladder.sequence)
-        for i in range(len(sse)):
-            for j in range(i+1,len(sse)):
-                g1s,g1e = sse[i]
-                g2s,g2e = sse[j]
-                print g1s,g1e,g2s,g2e
-                hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
-                #Analysis of pdb shows that only 8% of possible hydroph interactions are possible.
-                ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.08,force_scaler=contact_scaler)
+        #for i in range(len(sse)):
+        #    for j in range(i+1,len(sse)):
+        #        g1s,g1e = sse[i]
+        #        g2s,g2e = sse[j]
+        #        print g1s,g1e,g2s,g2e
+        #        hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, group_1=range(g1s,g1e), group_2=range(g2s,g2e), force_constant=0.1)
+        #        #Analysis of pdb shows that only 8% of possible hydroph interactions are possible.
+        #        ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.08,force_scaler=contact_scaler)
 
+        hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, force_constant=0.3)
+        #Analysis of pdb shows that only 8% of possible hydroph interactions are possible.
+        ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.08,force_scaler=contact_scaler)
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
         ladder.add_restraints(confinement_rest, restraints.ConstantCollection)
