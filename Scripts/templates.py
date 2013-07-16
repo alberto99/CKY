@@ -151,10 +151,14 @@ with ladder.setup():
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
         #Fragments of 5 and lower for sec structure:
-        ss_restraints2 = get_secondary_restraints( open('ss.dat').read() )
+        ss_restraints2 = get_secondary_restraints()
         ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.7)
 
-        ${extra_restraints}
+        ####here should go {extra_restraints}
+
+        hydrophobic,l1,l2 = restraints.get_hydrophobic_contact_restraints(ladder.sequence, force_constant=0.3)
+        #Analysis of pdb shows that only 8% of possible hydroph interactions are possible.
+        ladder.add_restraints(hydrophobic, restraints.BinaryLowestECollection, accuracy=0.08,force_scaler=contact_scaler)
 
         confinement_rest = restraints.get_confinement_restraints( len(ladder.sequence), 30.0, 1.0 )
         ladder.add_restraints(confinement_rest, restraints.ConstantCollection)
@@ -343,30 +347,30 @@ with ladder.setup(cluster='keeneland'):
 
     with ladder.setup_restraints():
         ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
-        ladder.add_restraints(ss2, restraints.ConstantCollection)
+        ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
         #Fragments of 5 and lower for sec structure:
         ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
-        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.5)
+        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.8)
 
-        destination = open('all_restraints.dat', 'wb')
-        for filename in glob.glob('TEMPLATES/template*.restraints'):
-            shutil.copyfileobj(open(filename, 'rb'), destination)
-        destination.close()
+        #destination = open('all_restraints.dat', 'wb')
+        #for filename in glob.glob('TEMPLATES/template*.restraints'):
+        #    shutil.copyfileobj(open(filename, 'rb'), destination)
+        #destination.close()
 
-        long_restraints = rest_parse.get_distance_bound_restraints( open('all_restraints.dat').read() )
-        random.shuffle(long_restraints)
-        n_long = float(len(long_restraints))
-        if n_long > 500:
-            long_restraints = long_restraints[:500]
-            n_long = float(len(long_restraints))
-        acc = 10.0/n_long
-        ladder.add_restraints(
-                long_restraints,
-                restraints.BinaryLowestECollection, accuracy=acc,
-                force_scaler=contact_scaler)
+        #long_restraints = rest_parse.get_distance_bound_restraints( open('all_restraints.dat').read() )
+        #random.shuffle(long_restraints)
+        #n_long = float(len(long_restraints))
+        #if n_long > 500:
+        #    long_restraints = long_restraints[:500]
+        #    n_long = float(len(long_restraints))
+        #acc = 10.0/n_long
+        #ladder.add_restraints(
+        #        long_restraints,
+        #        restraints.BinaryLowestECollection, accuracy=acc,
+        #        force_scaler=contact_scaler)
 
         sse = make_hydroph_groups()
 

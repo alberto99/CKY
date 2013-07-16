@@ -7,7 +7,7 @@ class SetupCKY(object):
         self.start_index()
         self.combination_rules()
         self.possible_simulation_fragments()
-	self.cycles=1000
+        self.cycles=1000
         #self.CKY_combinations()
 
     def start_index(self):
