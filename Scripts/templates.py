@@ -28,8 +28,8 @@ import restraints
 
 
 def add_restraint(start_index, delta_i, delta_j, add_helix):
-    extended_bounds = numpy.load('bounds_E_5.npy')
-    helical_bounds = numpy.load('bounds_H_5.npy')
+    extended_bounds = numpy.load('/nics/d/home/alberto3/src/CKY/Scripts/bounds_E_5.npy')
+    helical_bounds = numpy.load('/nics/d/home/alberto3/src/CKY/Scripts/bounds_H_5.npy')
 
     i = start_index + delta_i
     j = start_index + delta_j
@@ -229,8 +229,8 @@ def make_hydroph_groups():
         return sse
 
 def add_restraint(start_index, delta_i, delta_j, add_helix):
-    extended_bounds = numpy.load('bounds_E_5.npy')
-    helical_bounds = numpy.load('bounds_H_5.npy')
+    extended_bounds = numpy.load('/nics/d/home/alberto3/src/CKY/Scripts/bounds_E_5.npy')
+    helical_bounds = numpy.load('/nics/d/home/alberto3/src/CKY/Scripts/bounds_H_5.npy')
 
     i = start_index + delta_i
     j = start_index + delta_j
