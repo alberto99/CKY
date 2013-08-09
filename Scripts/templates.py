@@ -145,8 +145,8 @@ with ladder.setup():
         ladder.adaptive_remd_decay = 2.0
 
     with ladder.setup_restraints():
-        ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
-        ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
+        #ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
+        #ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
@@ -346,14 +346,14 @@ with ladder.setup(cluster='keeneland'):
         ladder.adaptive_remd_decay = 2.0
 
     with ladder.setup_restraints():
-        ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
-        ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
+        #ss2 = rest_parse.get_secondary_restraints( open('ss.dat').read(), force_const=1.0 )
+        #ladder.add_restraints(ss2, restraints.BinaryLowestECollection,accuracy=0.7)
 
         contact_scaler = restraints.NonLinearScaling(0.0, 1.0, 8.0)
 
         #Fragments of 5 and lower for sec structure:
-        ss_restraints2 = rest_parse.get_secondary_restraints( open('ss.dat').read() )
-        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.8)
+        ss_restraints2 = get_secondary_restraints( )
+        ladder.add_restraints(ss_restraints2, restraints.BinaryLowestECollection, accuracy=0.7)
 
         #destination = open('all_restraints.dat', 'wb')
         #for filename in glob.glob('TEMPLATES/template*.restraints'):
@@ -372,9 +372,9 @@ with ladder.setup(cluster='keeneland'):
         #        restraints.BinaryLowestECollection, accuracy=acc,
         #        force_scaler=contact_scaler)
 
-        sse = make_hydroph_groups()
+        #sse = make_hydroph_groups()
 
-        n_res = len(ladder.sequence)
+        #n_res = len(ladder.sequence)
         #for i in range(len(sse)):
         #    for j in range(i+1,len(sse)):
         #        g1s,g1e = sse[i]
